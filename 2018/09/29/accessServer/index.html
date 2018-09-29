@@ -17,7 +17,7 @@
 <meta property="og:description" content="初学Python访问服务器代码：1 获取当前路径下的文化夹信息，排除隐藏目录的干扰 2 获取某个文件夹下的所有文件大小 3 获取当前路径的下一级子目录数 4 文件重命名 Python代码如下：假设服务器中的路径是/data，首先需明白相对路径和绝对路径的区别：可参考[Python中的相对路径和绝对路径](https://www.cnblogs.com/wangyanyan/p/7440685.ht">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://yoursite.com/2018/09/29/accessServer/test.jpg">
-<meta property="og:updated_time" content="2018-09-29T11:35:49.231Z">
+<meta property="og:updated_time" content="2018-09-29T11:41:42.617Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="accessServer">
 <meta name="twitter:description" content="初学Python访问服务器代码：1 获取当前路径下的文化夹信息，排除隐藏目录的干扰 2 获取某个文件夹下的所有文件大小 3 获取当前路径的下一级子目录数 4 文件重命名 Python代码如下：假设服务器中的路径是/data，首先需明白相对路径和绝对路径的区别：可参考[Python中的相对路径和绝对路径](https://www.cnblogs.com/wangyanyan/p/7440685.ht">
@@ -186,86 +186,9 @@
 3 获取当前路径的下一级子目录数
 4 文件重命名
 </code></pre><h2 id="Python代码如下：假设服务器中的路径是-data，"><a href="#Python代码如下：假设服务器中的路径是-data，" class="headerlink" title="Python代码如下：假设服务器中的路径是/data，"></a>Python代码如下：假设服务器中的路径是/data，</h2><pre><code>首先需明白相对路径和绝对路径的区别：可参考[Python中的相对路径和绝对路径](https://www.cnblogs.com/wangyanyan/p/7440685.html)
-{%asset_img /photos/local-sshFile.png%}
-{%asset_img /photos/local-sshFile.png%}
-&lt;!--more--&gt;
-</code></pre><h3 id="代码1："><a href="#代码1：" class="headerlink" title="代码1："></a>代码1：</h3><pre><code>def get_server_specific_directory(pathTemp):
-    zone_info = []
-    if os.path.exists(pathTemp):
-        files = os.listdir(pathTemp)
-        files.sort()
-        for file in files:
-            m = os.path.join(pathTemp, file)
-            m1 = m.replace(&apos;\\&apos;, &apos;/&apos;)
-            if not file.startswith(&apos;.&apos;):
-                if os.path.isdir(m1):
-                    ftemp = {}
-                    ftemp[&quot;id&quot;] = file.strip()
-                    ftemp[&quot;text&quot;] = file.strip()
-                    ftemp[&quot;type&quot;] = &apos;&apos;
-                    ftemp[&quot;sign&quot;] = 1
-                    zone_info.append(ftemp)  # zone_info区域
-    return zone_info
-获取每一个文件的路径名、 文件名、文件类型
-def get_file_path_name_type(filename):
-    (filepath, tempfilename) = os.path.split(filename)
-    (shotname, extension) = os.path.splitext(tempfilename)
-    return filepath, shotname, extension
-</code></pre><h3 id="代码2：-函数获取文件中的所有文件的大小"><a href="#代码2：-函数获取文件中的所有文件的大小" class="headerlink" title="代码2： 函数获取文件中的所有文件的大小"></a>代码2： 函数获取文件中的所有文件的大小</h3><pre><code>def get_server_file_total_size(start_path):
-total_size = 0  # 总大小
-count = 0  # 个数
-for dirpath, dirnames, filenames in os.walk(start_path):
-    for f in filenames:
-        if not f.startswith(&apos;.&apos;):
-            count = count + 1
-            fp = os.path.join(dirpath, f)
-            total_size += os.path.getsize(fp)
-return total_size, count
-</code></pre><h3 id="代码3："><a href="#代码3：" class="headerlink" title="代码3："></a>代码3：</h3><pre><code>def get_server_specific_directory_count(pathTemp):
-n = 0
-if os.path.exists(pathTemp):
-    files = os.listdir(pathTemp)
-    for file in files:
-        m = os.path.join(pathTemp, file)
-        m1 = m.replace(&apos;\\&apos;, &apos;/&apos;)
-        if not file.startswith(&apos;.&apos;):
-            if os.path.isdir(m1):
-                n = n + 1
-return n
-</code></pre><h3 id="代码4："><a href="#代码4：" class="headerlink" title="代码4："></a>代码4：</h3><pre><code>def handle_server_rename(request):
-    print(&quot;********文件名称修改*********&quot;)
-    old = request.GET.get(&quot;old&quot;)
-    new = request.GET.get(&quot;new&quot;)
-    path = request.GET.get(&quot;path&quot;)
-    result = &apos;&apos;
-    p_temp = &quot;/data/&quot;
-    true_path = p_temp + path
-    src = true_path + &apos;/&apos; + old
-    dst = true_path + &apos;/&apos; + new
-    result = &apos;0&apos;
-    if old != new:
-        if os.path.isdir(src):
-            try:
-                os.rename(src, dst)
-            except Exception as e:
-                print(e)
-                print(&apos;rename dir fail\r\n&apos;)
-            else:
-                print(&apos;rename dir success\r\n&apos;)
-                result = &apos;1&apos;
-        else:
-            try:
-                os.rename(src, dst)
-            except Exception as e:
-                print(e)
-                print(&apos;rename file fail\r\n&apos;)
-            else:
-                print(&apos;rename file success\r\n&apos;)
-                result = &apos;1&apos;
-    else:
-        result = &apos;命名相同&apos;
-    return HttpResponse(json.dumps(result), &apos;application/json&apos;)
-</code></pre>
+</code></pre><a id="more"></a>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">###    代码1：</span></span><br><span class="line">    def get_server_specific_directory(pathTemp):</span><br><span class="line">        zone_info = []</span><br><span class="line">        <span class="keyword">if</span> os.path.exists(pathTemp):</span><br><span class="line">            files = os.listdir(pathTemp)</span><br><span class="line">            files.sort()</span><br><span class="line">            <span class="keyword">for</span> file <span class="keyword">in</span> files:</span><br><span class="line">                m = os.path.join(pathTemp, file)</span><br><span class="line">                m1 = m.replace(<span class="string">'\\'</span>, <span class="string">'/'</span>)</span><br><span class="line">                <span class="keyword">if</span> not file.startswith(<span class="string">'.'</span>):</span><br><span class="line">                    <span class="keyword">if</span> os.path.isdir(m1):</span><br><span class="line">                        ftemp = &#123;&#125;</span><br><span class="line">                        ftemp[<span class="string">"id"</span>] = file.strip()</span><br><span class="line">                        ftemp[<span class="string">"text"</span>] = file.strip()</span><br><span class="line">                        ftemp[<span class="string">"type"</span>] = <span class="string">''</span></span><br><span class="line">                        ftemp[<span class="string">"sign"</span>] = 1</span><br><span class="line">                        zone_info.append(ftemp)  <span class="comment"># zone_info区域</span></span><br><span class="line">        <span class="built_in">return</span> zone_info</span><br><span class="line">    获取每一个文件的路径名、 文件名、文件类型</span><br><span class="line">    def get_file_path_name_type(filename):</span><br><span class="line">        (filepath, tempfilename) = os.path.split(filename)</span><br><span class="line">        (shotname, extension) = os.path.splitext(tempfilename)</span><br><span class="line">        <span class="built_in">return</span> filepath, shotname, extension</span><br><span class="line"><span class="comment">###    代码2： 函数获取文件中的所有文件的大小</span></span><br><span class="line">        def get_server_file_total_size(start_path):</span><br><span class="line">        total_size = 0  <span class="comment"># 总大小</span></span><br><span class="line">        count = 0  <span class="comment"># 个数</span></span><br><span class="line">        <span class="keyword">for</span> dirpath, dirnames, filenames <span class="keyword">in</span> os.walk(start_path):</span><br><span class="line">            <span class="keyword">for</span> f <span class="keyword">in</span> filenames:</span><br><span class="line">                <span class="keyword">if</span> not f.startswith(<span class="string">'.'</span>):</span><br><span class="line">                    count = count + 1</span><br><span class="line">                    fp = os.path.join(dirpath, f)</span><br><span class="line">                    total_size += os.path.getsize(fp)</span><br><span class="line">        <span class="built_in">return</span> total_size, count</span><br><span class="line"><span class="comment">###    代码3：</span></span><br><span class="line">        def get_server_specific_directory_count(pathTemp):</span><br><span class="line">        n = 0</span><br><span class="line">        <span class="keyword">if</span> os.path.exists(pathTemp):</span><br><span class="line">            files = os.listdir(pathTemp)</span><br><span class="line">            <span class="keyword">for</span> file <span class="keyword">in</span> files:</span><br><span class="line">                m = os.path.join(pathTemp, file)</span><br><span class="line">                m1 = m.replace(<span class="string">'\\'</span>, <span class="string">'/'</span>)</span><br><span class="line">                <span class="keyword">if</span> not file.startswith(<span class="string">'.'</span>):</span><br><span class="line">                    <span class="keyword">if</span> os.path.isdir(m1):</span><br><span class="line">                        n = n + 1</span><br><span class="line">        <span class="built_in">return</span> n</span><br><span class="line"><span class="comment">###    代码4：</span></span><br><span class="line">    def handle_server_rename(request):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"********文件名称修改*********"</span>)</span><br><span class="line">        old = request.GET.get(<span class="string">"old"</span>)</span><br><span class="line">        new = request.GET.get(<span class="string">"new"</span>)</span><br><span class="line">        path = request.GET.get(<span class="string">"path"</span>)</span><br><span class="line">        result = <span class="string">''</span></span><br><span class="line">        p_temp = <span class="string">"/data/"</span></span><br><span class="line">        true_path = p_temp + path</span><br><span class="line">        src = true_path + <span class="string">'/'</span> + old</span><br><span class="line">        dst = true_path + <span class="string">'/'</span> + new</span><br><span class="line">        result = <span class="string">'0'</span></span><br><span class="line">        <span class="keyword">if</span> old != new:</span><br><span class="line">            <span class="keyword">if</span> os.path.isdir(src):</span><br><span class="line">                try:</span><br><span class="line">                    os.rename(src, dst)</span><br><span class="line">                except Exception as e:</span><br><span class="line">                    <span class="built_in">print</span>(e)</span><br><span class="line">                    <span class="built_in">print</span>(<span class="string">'rename dir fail\r\n'</span>)</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="built_in">print</span>(<span class="string">'rename dir success\r\n'</span>)</span><br><span class="line">                    result = <span class="string">'1'</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                try:</span><br><span class="line">                    os.rename(src, dst)</span><br><span class="line">                except Exception as e:</span><br><span class="line">                    <span class="built_in">print</span>(e)</span><br><span class="line">                    <span class="built_in">print</span>(<span class="string">'rename file fail\r\n'</span>)</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="built_in">print</span>(<span class="string">'rename file success\r\n'</span>)</span><br><span class="line">                    result = <span class="string">'1'</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            result = <span class="string">'命名相同'</span></span><br><span class="line">        <span class="built_in">return</span> HttpResponse(json.dumps(result), <span class="string">'application/json'</span>)</span><br></pre></td></tr></table></figure>
+
       
 
       
