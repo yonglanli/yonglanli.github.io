@@ -179,18 +179,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <pre><code>初学Python访问服务器代码：![test](test.jpg)
-1 获取当前路径下的文化夹信息，排除隐藏目录的干扰
+        <h2 id="初学Python访问服务器代码："><a href="#初学Python访问服务器代码：" class="headerlink" title="初学Python访问服务器代码："></a>初学Python访问服务器代码：<img src="/2018/09/29/accessServer/test.jpg" alt="test"></h2><pre><code>1 获取当前路径下的文化夹信息，排除隐藏目录的干扰
 2 获取某个文件夹下的所有文件大小
 3 获取当前路径的下一级子目录数
 4 文件重命名
-Python代码如下：假设服务器中的路径是/data，需明白相对路径和绝对路径的区别：可参考[Python中的相对路径和绝对路径](https://www.cnblogs.com/wangyanyan/p/7440685.html)
+</code></pre><h2 id="Python代码如下：假设服务器中的路径是-data，"><a href="#Python代码如下：假设服务器中的路径是-data，" class="headerlink" title="Python代码如下：假设服务器中的路径是/data，"></a>Python代码如下：假设服务器中的路径是/data，</h2><pre><code>首先需明白相对路径和绝对路径的区别：可参考[Python中的相对路径和绝对路径](https://www.cnblogs.com/wangyanyan/p/7440685.html)
 {%asset_img /photos/local-sshFile.png%}
 {%asset_img /photos/local-sshFile.png%}
 &lt;!--more--&gt;
-
-代码1：
-def get_server_specific_directory(pathTemp):
+</code></pre><h3 id="代码1："><a href="#代码1：" class="headerlink" title="代码1："></a>代码1：</h3><pre><code>def get_server_specific_directory(pathTemp):
     zone_info = []
     if os.path.exists(pathTemp):
         files = os.listdir(pathTemp)
@@ -207,36 +204,33 @@ def get_server_specific_directory(pathTemp):
                     ftemp[&quot;sign&quot;] = 1
                     zone_info.append(ftemp)  # zone_info区域
     return zone_info
-# TODO 获取每一个文件的路径名、 文件名、文件类型
+获取每一个文件的路径名、 文件名、文件类型
 def get_file_path_name_type(filename):
     (filepath, tempfilename) = os.path.split(filename)
     (shotname, extension) = os.path.splitext(tempfilename)
     return filepath, shotname, extension
-代码2：#  函数获取文件中的所有文件的大小
-    def get_server_file_total_size(start_path):
-    total_size = 0  # 总大小
-    count = 0  # 个数
-    for dirpath, dirnames, filenames in os.walk(start_path):
-        for f in filenames:
-            if not f.startswith(&apos;.&apos;):
-                count = count + 1
-                fp = os.path.join(dirpath, f)
-                total_size += os.path.getsize(fp)
-    return total_size, count
-代码3：
-    def get_server_specific_directory_count(pathTemp):
-    n = 0
-    if os.path.exists(pathTemp):
-        files = os.listdir(pathTemp)
-        for file in files:
-            m = os.path.join(pathTemp, file)
-            m1 = m.replace(&apos;\\&apos;, &apos;/&apos;)
-            if not file.startswith(&apos;.&apos;):
-                if os.path.isdir(m1):
-                    n = n + 1
-    return n
-代码4：
-def handle_server_rename(request):
+</code></pre><h3 id="代码2：-函数获取文件中的所有文件的大小"><a href="#代码2：-函数获取文件中的所有文件的大小" class="headerlink" title="代码2： 函数获取文件中的所有文件的大小"></a>代码2： 函数获取文件中的所有文件的大小</h3><pre><code>def get_server_file_total_size(start_path):
+total_size = 0  # 总大小
+count = 0  # 个数
+for dirpath, dirnames, filenames in os.walk(start_path):
+    for f in filenames:
+        if not f.startswith(&apos;.&apos;):
+            count = count + 1
+            fp = os.path.join(dirpath, f)
+            total_size += os.path.getsize(fp)
+return total_size, count
+</code></pre><h3 id="代码3："><a href="#代码3：" class="headerlink" title="代码3："></a>代码3：</h3><pre><code>def get_server_specific_directory_count(pathTemp):
+n = 0
+if os.path.exists(pathTemp):
+    files = os.listdir(pathTemp)
+    for file in files:
+        m = os.path.join(pathTemp, file)
+        m1 = m.replace(&apos;\\&apos;, &apos;/&apos;)
+        if not file.startswith(&apos;.&apos;):
+            if os.path.isdir(m1):
+                n = n + 1
+return n
+</code></pre><h3 id="代码4："><a href="#代码4：" class="headerlink" title="代码4："></a>代码4：</h3><pre><code>def handle_server_rename(request):
     print(&quot;********文件名称修改*********&quot;)
     old = request.GET.get(&quot;old&quot;)
     new = request.GET.get(&quot;new&quot;)
