@@ -159,6 +159,177 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-accessServer" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/09/29/accessServer/">accessServer</a>
+    </h1>
+  
+
+        
+        <a href="/2018/09/29/accessServer/" class="archive-article-date">
+  	<time datetime="2018-09-29T08:21:18.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <pre><code>初学Python访问服务器代码：![test](test.jpg)
+1 获取当前路径下的文化夹信息，排除隐藏目录的干扰
+2 获取某个文件夹下的所有文件大小
+3 获取当前路径的下一级子目录数
+4 文件重命名
+Python代码如下：假设服务器中的路径是/data，需明白相对路径和绝对路径的区别：可参考[Python中的相对路径和绝对路径](https://www.cnblogs.com/wangyanyan/p/7440685.html)
+{%asset_img /photos/local-sshFile.png%}
+{%asset_img /photos/local-sshFile.png%}
+&lt;!--more--&gt;
+
+代码1：
+def get_server_specific_directory(pathTemp):
+    zone_info = []
+    if os.path.exists(pathTemp):
+        files = os.listdir(pathTemp)
+        files.sort()
+        for file in files:
+            m = os.path.join(pathTemp, file)
+            m1 = m.replace(&apos;\\&apos;, &apos;/&apos;)
+            if not file.startswith(&apos;.&apos;):
+                if os.path.isdir(m1):
+                    ftemp = {}
+                    ftemp[&quot;id&quot;] = file.strip()
+                    ftemp[&quot;text&quot;] = file.strip()
+                    ftemp[&quot;type&quot;] = &apos;&apos;
+                    ftemp[&quot;sign&quot;] = 1
+                    zone_info.append(ftemp)  # zone_info区域
+    return zone_info
+# TODO 获取每一个文件的路径名、 文件名、文件类型
+def get_file_path_name_type(filename):
+    (filepath, tempfilename) = os.path.split(filename)
+    (shotname, extension) = os.path.splitext(tempfilename)
+    return filepath, shotname, extension
+代码2：#  函数获取文件中的所有文件的大小
+    def get_server_file_total_size(start_path):
+    total_size = 0  # 总大小
+    count = 0  # 个数
+    for dirpath, dirnames, filenames in os.walk(start_path):
+        for f in filenames:
+            if not f.startswith(&apos;.&apos;):
+                count = count + 1
+                fp = os.path.join(dirpath, f)
+                total_size += os.path.getsize(fp)
+    return total_size, count
+代码3：
+    def get_server_specific_directory_count(pathTemp):
+    n = 0
+    if os.path.exists(pathTemp):
+        files = os.listdir(pathTemp)
+        for file in files:
+            m = os.path.join(pathTemp, file)
+            m1 = m.replace(&apos;\\&apos;, &apos;/&apos;)
+            if not file.startswith(&apos;.&apos;):
+                if os.path.isdir(m1):
+                    n = n + 1
+    return n
+代码4：
+def handle_server_rename(request):
+    print(&quot;********文件名称修改*********&quot;)
+    old = request.GET.get(&quot;old&quot;)
+    new = request.GET.get(&quot;new&quot;)
+    path = request.GET.get(&quot;path&quot;)
+    result = &apos;&apos;
+    p_temp = &quot;/data/&quot;
+    true_path = p_temp + path
+    src = true_path + &apos;/&apos; + old
+    dst = true_path + &apos;/&apos; + new
+    result = &apos;0&apos;
+    if old != new:
+        if os.path.isdir(src):
+            try:
+                os.rename(src, dst)
+            except Exception as e:
+                print(e)
+                print(&apos;rename dir fail\r\n&apos;)
+            else:
+                print(&apos;rename dir success\r\n&apos;)
+                result = &apos;1&apos;
+        else:
+            try:
+                os.rename(src, dst)
+            except Exception as e:
+                print(e)
+                print(&apos;rename file fail\r\n&apos;)
+            else:
+                print(&apos;rename file success\r\n&apos;)
+                result = &apos;1&apos;
+    else:
+        result = &apos;命名相同&apos;
+    return HttpResponse(json.dumps(result), &apos;application/json&apos;)
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">python</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">access Server</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">get file information</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/09/29/accessServer/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-handleBug-ckeditor-uploadimage" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -259,10 +430,12 @@
       
         <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><pre><code>python语言，Django框架，富文本编辑上传图片
 出现的错误地方: [http://127.0.0.1:8000/admin/login/?next=/ckeditor/upload/](http://127.0.0.1:8000/admin/login/?next=/ckeditor/upload/%3FCKEditor%3Did_content%26CKEditorFuncNum%3D1%26langCode%3Dzh-cn)
-出现问题的地方是: /assets/blogImg/photo.jpg
+出现问题的地方是: {% asset_img /photos/uploadError.png %}
 解决方法
 跟踪整个图片上传的过程，终于在ckeditor_uploader.urls中，找到问题，上传图片实现方法views.upload，其中staff_member_required登录修饰器的问题（需要验证是否是Django自带的admin账户）
 去源码包中将上传图片的代码中staff_member_required方法去掉
+
+{% asset_img /photos/uploadSolve.png %}
 </code></pre>
       
 
@@ -789,6 +962,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">access Server</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">get file information</a>
               </li>
              
               <li class="article-tag-list-item">

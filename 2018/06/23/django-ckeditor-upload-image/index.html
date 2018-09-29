@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="六月雪学习记录">
 <meta property="og:description" content="概述问题描述python语言，Django框架，富文本编辑上传图片 出现的错误地方: [http://127.0.0.1:8000/admin/login/?next=/ckeditor/upload/](http://127.0.0.1:8000/admin/login/?next=/ckeditor/upload/%3FCKEditor%3Did_content%26CKEditorFuncN">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-06-23T14:39:35.199Z">
+<meta property="og:updated_time" content="2018-09-29T11:24:26.336Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="django-ckeditor upload image">
 <meta name="twitter:description" content="概述问题描述python语言，Django框架，富文本编辑上传图片 出现的错误地方: [http://127.0.0.1:8000/admin/login/?next=/ckeditor/upload/](http://127.0.0.1:8000/admin/login/?next=/ckeditor/upload/%3FCKEditor%3Did_content%26CKEditorFuncN">
@@ -181,10 +181,12 @@
       
         <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><pre><code>python语言，Django框架，富文本编辑上传图片
 出现的错误地方: [http://127.0.0.1:8000/admin/login/?next=/ckeditor/upload/](http://127.0.0.1:8000/admin/login/?next=/ckeditor/upload/%3FCKEditor%3Did_content%26CKEditorFuncNum%3D1%26langCode%3Dzh-cn)
-出现问题的地方是: /assets/blogImg/photo.jpg
+出现问题的地方是: {% asset_img /photos/uploadError.png %}
 解决方法
 跟踪整个图片上传的过程，终于在ckeditor_uploader.urls中，找到问题，上传图片实现方法views.upload，其中staff_member_required登录修饰器的问题（需要验证是否是Django自带的admin账户）
 去源码包中将上传图片的代码中staff_member_required方法去掉
+
+{% asset_img /photos/uploadSolve.png %}
 </code></pre>
       
 
@@ -435,6 +437,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">access Server</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">get file information</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -6,18 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2018/3 | 六月雪学习记录</title>
+  <title>accessServer | 六月雪学习记录</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="You are your greatest asset.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="六月雪学习记录">
-<meta property="og:url" content="http://yoursite.com/archives/2018/03/index.html">
+  <meta name="description" content="初学Python访问服务器代码：![test](test.jpg) 1 获取当前路径下的文化夹信息，排除隐藏目录的干扰 2 获取某个文件夹下的所有文件大小 3 获取当前路径的下一级子目录数 4 文件重命名 Python代码如下：假设服务器中的路径是/data，需明白相对路径和绝对路径的区别：可参考[Python中的相对路径和绝对路径](https://www.cnblogs.com/wangyan">
+<meta name="keywords" content="python,access Server,get file information">
+<meta property="og:type" content="article">
+<meta property="og:title" content="accessServer">
+<meta property="og:url" content="http://yoursite.com/2018/09/29/accessServer/index.html">
 <meta property="og:site_name" content="六月雪学习记录">
-<meta property="og:description" content="You are your greatest asset.">
+<meta property="og:description" content="初学Python访问服务器代码：![test](test.jpg) 1 获取当前路径下的文化夹信息，排除隐藏目录的干扰 2 获取某个文件夹下的所有文件大小 3 获取当前路径的下一级子目录数 4 文件重命名 Python代码如下：假设服务器中的路径是/data，需明白相对路径和绝对路径的区别：可参考[Python中的相对路径和绝对路径](https://www.cnblogs.com/wangyan">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-09-29T11:29:33.191Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="六月雪学习记录">
-<meta name="twitter:description" content="You are your greatest asset.">
+<meta name="twitter:title" content="accessServer">
+<meta name="twitter:description" content="初学Python访问服务器代码：![test](test.jpg) 1 获取当前路径下的文化夹信息，排除隐藏目录的干扰 2 获取某个文件夹下的所有文件大小 3 获取当前路径的下一级子目录数 4 文件重命名 Python代码如下：假设服务器中的路径是/data，需明白相对路径和绝对路径的区别：可参考[Python中的相对路径和绝对路径](https://www.cnblogs.com/wangyan">
   
     <link rel="alternative" href="/atom.xml" title="六月雪学习记录" type="application/atom+xml">
   
@@ -157,36 +159,145 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-accessServer" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2018/03/01/学习，Django-1/" class="archive-article-date">
-  	<time datetime="2018-03-01T10:42:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-01</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/03/01/学习，Django-1/">学习，Django-1</a>
+    <h1 class="article-title" itemprop="name">
+      accessServer
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2018/09/29/accessServer/" class="archive-article-date">
+  	<time datetime="2018-09-29T08:21:18.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <pre><code>初学Python访问服务器代码：![test](test.jpg)
+1 获取当前路径下的文化夹信息，排除隐藏目录的干扰
+2 获取某个文件夹下的所有文件大小
+3 获取当前路径的下一级子目录数
+4 文件重命名
+Python代码如下：假设服务器中的路径是/data，需明白相对路径和绝对路径的区别：可参考[Python中的相对路径和绝对路径](https://www.cnblogs.com/wangyanyan/p/7440685.html)
+{%asset_img /photos/local-sshFile.png%}
+{%asset_img /photos/local-sshFile.png%}
+&lt;!--more--&gt;
+
+代码1：
+def get_server_specific_directory(pathTemp):
+    zone_info = []
+    if os.path.exists(pathTemp):
+        files = os.listdir(pathTemp)
+        files.sort()
+        for file in files:
+            m = os.path.join(pathTemp, file)
+            m1 = m.replace(&apos;\\&apos;, &apos;/&apos;)
+            if not file.startswith(&apos;.&apos;):
+                if os.path.isdir(m1):
+                    ftemp = {}
+                    ftemp[&quot;id&quot;] = file.strip()
+                    ftemp[&quot;text&quot;] = file.strip()
+                    ftemp[&quot;type&quot;] = &apos;&apos;
+                    ftemp[&quot;sign&quot;] = 1
+                    zone_info.append(ftemp)  # zone_info区域
+    return zone_info
+# TODO 获取每一个文件的路径名、 文件名、文件类型
+def get_file_path_name_type(filename):
+    (filepath, tempfilename) = os.path.split(filename)
+    (shotname, extension) = os.path.splitext(tempfilename)
+    return filepath, shotname, extension
+代码2：#  函数获取文件中的所有文件的大小
+    def get_server_file_total_size(start_path):
+    total_size = 0  # 总大小
+    count = 0  # 个数
+    for dirpath, dirnames, filenames in os.walk(start_path):
+        for f in filenames:
+            if not f.startswith(&apos;.&apos;):
+                count = count + 1
+                fp = os.path.join(dirpath, f)
+                total_size += os.path.getsize(fp)
+    return total_size, count
+代码3：
+    def get_server_specific_directory_count(pathTemp):
+    n = 0
+    if os.path.exists(pathTemp):
+        files = os.listdir(pathTemp)
+        for file in files:
+            m = os.path.join(pathTemp, file)
+            m1 = m.replace(&apos;\\&apos;, &apos;/&apos;)
+            if not file.startswith(&apos;.&apos;):
+                if os.path.isdir(m1):
+                    n = n + 1
+    return n
+代码4：
+def handle_server_rename(request):
+    print(&quot;********文件名称修改*********&quot;)
+    old = request.GET.get(&quot;old&quot;)
+    new = request.GET.get(&quot;new&quot;)
+    path = request.GET.get(&quot;path&quot;)
+    result = &apos;&apos;
+    p_temp = &quot;/data/&quot;
+    true_path = p_temp + path
+    src = true_path + &apos;/&apos; + old
+    dst = true_path + &apos;/&apos; + new
+    result = &apos;0&apos;
+    if old != new:
+        if os.path.isdir(src):
+            try:
+                os.rename(src, dst)
+            except Exception as e:
+                print(e)
+                print(&apos;rename dir fail\r\n&apos;)
+            else:
+                print(&apos;rename dir success\r\n&apos;)
+                result = &apos;1&apos;
+        else:
+            try:
+                os.rename(src, dst)
+            except Exception as e:
+                print(e)
+                print(&apos;rename file fail\r\n&apos;)
+            else:
+                print(&apos;rename file success\r\n&apos;)
+                result = &apos;1&apos;
+    else:
+        result = &apos;命名相同&apos;
+    return HttpResponse(json.dumps(result), &apos;application/json&apos;)
+</code></pre>
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>感谢您的观看<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -196,29 +307,116 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Django</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">access Server</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">基础</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">get file information</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/09/29/accessServer/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2018/09/29/handleBug-ckeditor-uploadimage/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">GitHub ssh keys and deploy keys</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -241,8 +439,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
